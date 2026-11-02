@@ -85,6 +85,7 @@ async function getLatestRun(repository) {
       duration_seconds: Math.floor((updatedAt - createdAt) / 1000),
       html_url: run.html_url,
       name: run.name,
+      message: run.display_title || run.head_commit?.message || 'Workflow run obtenido de GitHub Actions',
     };
 
     // Actualizar caché

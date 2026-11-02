@@ -3,7 +3,7 @@
 const { Router } = require('express');
 const config = require('../config');
 const content = require('../content');
-const { getLatestRun } = require('../services/github');
+const githubService = require('../services/github');
 
 const router = Router();
 const startTime = Date.now();
@@ -47,7 +47,7 @@ router.get('/info', (_req, res) => {
  */
 router.get('/pipeline/latest', async (_req, res) => {
   try {
-    const run = await getLatestRun(config.githubRepository);
+    const run = await githubService.getLatestRun(config.githubRepository);
     res.json(run);
   } catch (err) {
     console.error('[pipeline/latest] Error:', err.message);
