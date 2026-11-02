@@ -71,11 +71,8 @@ graph LR
 eneisoft-pipeline-demo/
 ├── .github/
 │   ├── workflows/
-│   │   ├── ci-cd.yml              # Pipeline principal (Test -> Build & Push -> Deploy)
-│   │   └── ci-gitops.yml          # Variante GitOps (Disparo manual, commit y Argo CD)
+│   │   └── ci-cd.yml              # Pipeline principal (Test -> Build & Push -> Deploy)
 │   └── dependabot.yml             # Automatización de parches para npm y GitHub Actions
-├── argocd/
-│   └── application.yaml           # Manifiesto GitOps para Argo CD
 ├── docs/
 │   ├── DEMO-SCRIPT.md             # Guion detallado minuto a minuto y plan B para la charla
 │   ├── SECRETOS-Y-VARIABLES.md    # Explicación técnica de OIDC vs Client Secrets

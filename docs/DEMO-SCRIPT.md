@@ -15,7 +15,7 @@
 | **2. Arquitectura de la Solución** | 19:10 – 19:25 (15 min) | Explicación del flujo: Git Push → GitHub Actions (OIDC) → ACR → AKS con Kustomize. Mostrar diagrama. |
 | **3. Fundamentos de Seguridad** | 19:25 – 19:35 (10 min) | Por qué NO usamos client secrets ni JSONs: la magia de OpenID Connect (OIDC) y contenedores no-root. |
 | **4. DEMO EN VIVO (El Clímax)** | **19:35 – 19:50 (15 min)** | **Edición en vivo, git push, seguimiento del pipeline y cambio en la web.** |
-| **5. Bonus GitOps & Preguntas** | 19:50 – 20:00 (10 min) | Mención rápida de Argo CD, balanceo entre pods y preguntas de la audiencia. |
+| **5. Cierre & Preguntas** | 19:50 – 20:00 (10 min) | Balanceo entre pods, resumen y preguntas de la audiencia. |
 
 ---
 

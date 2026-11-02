@@ -9,7 +9,6 @@ on:
       - '*.md'
       - 'LICENSE'
       - 'infra/**'
-      - 'argocd/**'
       - '.gitignore'
       - '.dockerignore'
   pull_request:
@@ -20,7 +19,6 @@ on:
       - '*.md'
       - 'LICENSE'
       - 'infra/**'
-      - 'argocd/**'
   workflow_dispatch:
 
 concurrency:

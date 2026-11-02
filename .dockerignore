@@ -9,7 +9,6 @@ node_modules
 docs/
 infra/
 k8s/
-argocd/
 .github/
 *.md
 LICENSE
