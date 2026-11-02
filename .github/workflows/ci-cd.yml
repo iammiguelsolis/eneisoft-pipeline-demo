@@ -108,7 +108,7 @@ jobs:
       # Paso opcional DevSecOps: escaneo de vulnerabilidades con Trivy
       - name: Trivy Vulnerability Scan
         if: vars.ENABLE_TRIVY == 'true'
-        uses: aquasecurity/trivy-action@0.36.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ vars.ACR_NAME }}.azurecr.io/eneisoft-demo:${{ github.sha }}
           format: 'table'
