@@ -1,0 +1,191 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - 'LICENSE'
+      - 'infra/**'
+      - 'argocd/**'
+      - '.gitignore'
+      - '.dockerignore'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - 'LICENSE'
+      - 'infra/**'
+      - 'argocd/**'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  # ═══════════════════════════════════════════════════════════
+  # 1. TEST (CI)
+  # ═══════════════════════════════════════════════════════════
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit & integration tests
+        run: npm test
+
+  # ═══════════════════════════════════════════════════════════
+  # 2. BUILD & PUSH (Docker -> Azure Container Registry)
+  # ═══════════════════════════════════════════════════════════
+  build-and-push:
+    name: Build & Push Docker Image
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # Requerido para autenticación OIDC sin secrets
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get current ISO timestamp
+        id: timestamp
+        run: echo "date=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_OUTPUT"
+
+      - name: Azure Login via OIDC
+        if: github.event_name != 'pull_request'
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Log in to Azure Container Registry
+        if: github.event_name != 'pull_request'
+        run: |
+          az acr login --name ${{ vars.ACR_NAME }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push container image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ${{ vars.ACR_NAME }}.azurecr.io/eneisoft-demo:${{ github.sha }}
+            ${{ vars.ACR_NAME }}.azurecr.io/eneisoft-demo:latest
+          build-args: |
+            APP_VERSION=1.0.0
+            GIT_SHA=${{ github.sha }}
+            BUILD_NUMBER=${{ github.run_number }}
+            BUILD_DATE=${{ steps.timestamp.outputs.date }}
+            GITHUB_REPOSITORY=${{ github.repository }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Paso opcional DevSecOps: escaneo de vulnerabilidades con Trivy
+      - name: Trivy Vulnerability Scan
+        if: vars.ENABLE_TRIVY == 'true'
+        uses: aquasecurity/trivy-action@0.36.0
+        with:
+          image-ref: ${{ vars.ACR_NAME }}.azurecr.io/eneisoft-demo:${{ github.sha }}
+          format: 'table'
+          exit-code: '0' # No bloquea el pipeline de la demo
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+
+  # ═══════════════════════════════════════════════════════════
+  # 3. DEPLOY (AKS via Kustomize)
+  # ═══════════════════════════════════════════════════════════
+  deploy:
+    name: Deploy to Azure Kubernetes Service
+    needs: build-and-push
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure Login via OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Get AKS credentials & configure kubelogin
+        run: |
+          az aks get-credentials \
+            --resource-group ${{ vars.RESOURCE_GROUP }} \
+            --name ${{ vars.AKS_NAME }} \
+            --overwrite-existing
+
+          # Si el cluster utiliza Microsoft Entra ID / Azure RBAC, kubelogin es mandatorio
+          if az aks show --resource-group ${{ vars.RESOURCE_GROUP }} --name ${{ vars.AKS_NAME }} --query "aadProfile" -o tsv | grep -q .; then
+            echo "::notice::Clúster con Entra ID detectado. Instalando y configurando kubelogin..."
+            sudo az aks install-cli
+            kubelogin convert-kubeconfig -l azurecli
+          fi
+
+      - name: Update manifest image & Apply Kustomize
+        run: |
+          cd k8s
+          IMAGE_TAG="${{ vars.ACR_NAME }}.azurecr.io/eneisoft-demo:${{ github.sha }}"
+          kustomize edit set image eneisoft-demo="${IMAGE_TAG}"
+          kubectl apply -k .
+
+      - name: Wait for Deployment Rollout
+        run: |
+          kubectl rollout status deployment/eneisoft-demo -n eneisoft-demo --timeout=120s
+
+      - name: Generate Deployment Summary
+        run: |
+          # Intentar obtener la IP pública del LoadBalancer (espera hasta 30s si está aprovisionando)
+          LB_IP="Pendiente de asignación en Azure"
+          for i in {1..6}; do
+            IP=$(kubectl get svc eneisoft-demo-service -n eneisoft-demo -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || true)
+            if [ -n "$IP" ]; then
+              LB_IP="http://$IP"
+              break
+            fi
+            sleep 5
+          done
+
+          echo "### 🚀 Despliegue completado con éxito en AKS" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Recurso | Detalle |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Imagen ACR** | \`${{ vars.ACR_NAME }}.azurecr.io/eneisoft-demo:${{ github.sha }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Commit SHA** | \`${{ github.sha }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Run Number** | \`#${{ github.run_number }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **Namespace** | \`eneisoft-demo\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| **URL de la App** | [$LB_IP]($LB_IP) |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "> 💡 **Tip:** Abre la URL para ver el nuevo mensaje reflejado en vivo en la demo." >> "$GITHUB_STEP_SUMMARY"

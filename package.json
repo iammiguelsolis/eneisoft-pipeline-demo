@@ -1,0 +1,25 @@
+{
+  "name": "eneisoft-pipeline-demo",
+  "version": "1.0.0",
+  "description": "Demo: Del git push a la nube – ENEISOFT XVI, track DevOps",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "jest --forceExit --detectOpenHandles"
+  },
+  "keywords": ["devops", "pipeline", "demo", "eneisoft"],
+  "author": "Miguel Solis",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.0",
+    "helmet": "^8.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

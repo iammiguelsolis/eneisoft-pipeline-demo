@@ -1,0 +1,54 @@
+graph LR
+    %% Configuración de estilo
+    classDef dev fill:#1e293b,stroke:#B6F000,stroke-width:2px,color:#ffffff;
+    classDef gh fill:#0f172a,stroke:#19E3C8,stroke-width:2px,color:#ffffff;
+    classDef az fill:#0b192c,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+    classDef k8s fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef client fill:#312e81,stroke:#a78bfa,stroke-width:2px,color:#ffffff;
+
+    subgraph LOCAL["💻 Entorno de Desarrollo"]
+        DEV["Desarrollador / Ponente"]:::dev
+        EDIT["Edita src/content.js"]:::dev
+        PUSH["git push origin main"]:::dev
+        DEV --> EDIT --> PUSH
+    end
+
+    subgraph GHA["⚙️ GitHub Actions Workflow (OIDC Auth)"]
+        TRIGGER["Trigger: Push a main"]:::gh
+        TEST["Job 1: Tests (Jest)"]:::gh
+        BUILD["Job 2: Docker Buildx"]:::gh
+        OIDC["OIDC Token Exchange (sin client secrets)"]:::gh
+        DEPLOY["Job 3: Deploy (Kustomize)"]:::gh
+
+        TRIGGER --> TEST --> BUILD
+        BUILD -.->|Auth con Azure| OIDC
+        BUILD --> DEPLOY
+    end
+
+    subgraph AZURE["☁️ Microsoft Azure Cloud"]
+        ACR["Azure Container Registry (ACR)"]:::az
+        AKS["Azure Kubernetes Service (AKS)"]:::az
+        ENTRA["Microsoft Entra ID (Federated Credentials)"]:::az
+
+        OIDC -.->|Valida Token| ENTRA
+        BUILD -->|Push imagen etiquetada| ACR
+        DEPLOY -->|kustomize edit + apply| AKS
+        ACR -->|Pull imagen autenticada| AKS
+    end
+
+    subgraph CLUSTER["☸️ Clúster AKS (Namespace: eneisoft-demo)"]
+        SVC["Service: LoadBalancer (Puerto 80)"]:::k8s
+        POD1["Pod 1: Express App (Non-Root)"]:::k8s
+        POD2["Pod 2: Express App (Non-Root)"]:::k8s
+
+        AKS --> SVC
+        SVC --> POD1
+        SVC --> POD2
+    end
+
+    subgraph PUBLIC["🌐 Audiencia ENEISOFT XVI"]
+        BROWSER["Navegador Web / Estudiantes"]:::client
+        BROWSER -->|HTTP GET /| SVC
+    end
+
+    PUSH -->|WebHook| TRIGGER

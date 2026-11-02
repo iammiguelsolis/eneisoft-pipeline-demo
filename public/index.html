@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ENEISOFT XVI – Del git push a la nube: Construye tu primer pipeline automatizado">
+  <title>Del Git Push a la Nube | ENEISOFT XVI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!--  HEADER                                             -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <header class="header">
+    <div class="container header__inner">
+      <div class="header__brand">
+        <!-- Slot para logo: reemplaza con <img src="/assets/eneisoft-logo.png" alt="ENEISOFT" class="header__logo"> -->
+        <span class="header__wordmark">eneisoft</span>
+        <span class="header__edition">XVI</span>
+      </div>
+      <div class="header__badges">
+        <span class="pill pill--lime">DEVOPS</span>
+        <span class="pill pill--outline">GitHub Actions Certified (GH-200)</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!--  HERO                                               -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section class="hero" aria-label="Sección principal">
+    <div class="container hero__inner">
+      <div class="hero__text">
+        <h1 class="hero__title">
+          <span class="text-lime">DEL GIT PUSH</span><br>
+          <span class="text-white">A LA NUBE</span>
+        </h1>
+        <p class="hero__subtitle">Construye tu primer pipeline automatizado</p>
+        <p class="hero__description">
+          Cada <code>git push</code> a <code>main</code> activa un pipeline de GitHub Actions
+          que construye, empaqueta en Docker y despliega en Kubernetes automáticamente.
+        </p>
+      </div>
+      <div class="hero__card card card--glow">
+        <div class="card__row">
+          <svg class="card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>03 NOV 2025</span>
+        </div>
+        <div class="card__row">
+          <svg class="card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>19:00 – 20:00</span>
+        </div>
+        <div class="card__row">
+          <svg class="card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 10l5 5-5 5"/><path d="M4 4v7a4 4 0 004 4h12"/></svg>
+          <span>Virtual · Google Meet</span>
+        </div>
+        <div class="card__row card__row--speaker">
+          <div class="speaker">
+            <!-- Slot para foto: reemplaza con <img src="/assets/ponente.jpg" alt="Miguel Solis" class="speaker__photo"> -->
+            <div class="speaker__photo-placeholder" aria-label="Foto del ponente">MS</div>
+            <div class="speaker__info">
+              <strong>Miguel Solis</strong>
+              <small>Practicante Ing. Software – Mibanco</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!--  PIPELINE EN VIVO                                   -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section class="section" id="pipeline" aria-label="Pipeline en vivo">
+    <div class="container">
+      <h2 class="section__title">Pipeline en vivo</h2>
+      <p class="section__subtitle">Estado real del último despliegue desde GitHub Actions</p>
+
+      <!-- Diagrama animado -->
+      <div class="pipeline" role="img" aria-label="Diagrama del pipeline: git push, test, build Docker, push a ACR, deploy en AKS, app en vivo">
+        <div class="pipeline__stage" data-stage="push">
+          <div class="pipeline__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3v6m0 6v6"/><path d="M5.63 5.63l4.24 4.24m4.26 4.26l4.24 4.24"/><path d="M3 12h6m6 0h6"/><path d="M5.63 18.37l4.24-4.24m4.26-4.26l4.24-4.24"/></svg>
+          </div>
+          <span class="pipeline__label">git push</span>
+        </div>
+        <div class="pipeline__arrow" aria-hidden="true">
+          <svg viewBox="0 0 40 24"><path d="M0 12h32m-6-6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <div class="pipeline__group">
+          <span class="pipeline__group-label">GitHub Actions</span>
+          <div class="pipeline__stages-row">
+            <div class="pipeline__stage" data-stage="test">
+              <div class="pipeline__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+              </div>
+              <span class="pipeline__label">Test</span>
+            </div>
+            <div class="pipeline__arrow pipeline__arrow--small" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M0 12h16m-4-4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <div class="pipeline__stage" data-stage="build">
+              <div class="pipeline__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+              </div>
+              <span class="pipeline__label">Build</span>
+            </div>
+            <div class="pipeline__arrow pipeline__arrow--small" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M0 12h16m-4-4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <div class="pipeline__stage" data-stage="push-acr">
+              <div class="pipeline__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>
+              </div>
+              <span class="pipeline__label">Push ACR</span>
+            </div>
+          </div>
+        </div>
+        <div class="pipeline__arrow" aria-hidden="true">
+          <svg viewBox="0 0 40 24"><path d="M0 12h32m-6-6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <div class="pipeline__stage" data-stage="deploy">
+          <div class="pipeline__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <span class="pipeline__label">AKS</span>
+        </div>
+        <div class="pipeline__arrow" aria-hidden="true">
+          <svg viewBox="0 0 40 24"><path d="M0 12h32m-6-6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <div class="pipeline__stage pipeline__stage--final" data-stage="live">
+          <div class="pipeline__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          </div>
+          <span class="pipeline__label">App en vivo</span>
+        </div>
+      </div>
+
+      <!-- Estado del último run -->
+      <div class="pipeline-status card card--glow" id="pipeline-status" role="status" aria-live="polite">
+        <div class="pipeline-status__loading">Cargando estado del pipeline...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!--  ESTE DESPLIEGUE                                    -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section class="section section--alt" id="deploy-info" aria-label="Información de este despliegue">
+    <div class="container">
+      <h2 class="section__title">Este despliegue</h2>
+      <p class="section__subtitle">Datos en tiempo real de la instancia que sirvió esta página</p>
+
+      <div class="info-grid" id="info-grid" role="status" aria-live="polite">
+        <div class="info-grid__loading">Cargando...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!--  BALANCEO ENTRE PODS                                -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section class="section" id="load-balancing" aria-label="Balanceo de carga entre pods">
+    <div class="container">
+      <h2 class="section__title">Balanceo entre pods</h2>
+      <p class="section__subtitle">Haz varias peticiones y observa cómo responden distintos pods (2 réplicas)</p>
+
+      <div class="lb-demo">
+        <button class="btn btn--lime" id="lb-btn" aria-label="Consultar múltiples pods">
+          Consultar de nuevo
+        </button>
+        <div class="lb-results" id="lb-results" role="status" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!--  CAMBIA ESTO Y HAZ PUSH                             -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <section class="section section--alt" id="demo-change" aria-label="Cómo hacer cambios en vivo">
+    <div class="container">
+      <h2 class="section__title">Cambia esto y haz push</h2>
+      <p class="section__subtitle">La demo consiste en editar un archivo, hacer push, y ver el cambio aquí</p>
+
+      <div class="demo-change__grid">
+        <div class="card card--glow demo-change__code">
+          <div class="card__header">
+            <svg class="card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            <code>src/content.js</code>
+          </div>
+          <pre class="demo-change__pre"><code id="content-preview">// Cargando...</code></pre>
+        </div>
+
+        <div class="demo-change__steps">
+          <div class="demo-change__step">
+            <div class="demo-change__number">1</div>
+            <div>
+              <strong>Edita</strong>
+              <p>Cambia el <code>message</code> en <code>src/content.js</code></p>
+            </div>
+          </div>
+          <div class="demo-change__step">
+            <div class="demo-change__number">2</div>
+            <div>
+              <strong>Commit</strong>
+              <p><code>git add . && git commit -m "demo: nuevo mensaje"</code></p>
+            </div>
+          </div>
+          <div class="demo-change__step">
+            <div class="demo-change__number">3</div>
+            <div>
+              <strong>Push</strong>
+              <p><code>git push origin main</code></p>
+            </div>
+          </div>
+          <div class="demo-change__step">
+            <div class="demo-change__number">4</div>
+            <div>
+              <strong>Observa</strong>
+              <p>El pipeline corre y en ~2 min el mensaje cambia aquí</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensaje dinámico actual -->
+      <div class="demo-change__current card card--glow">
+        <span class="demo-change__label">Mensaje actual desplegado:</span>
+        <p class="demo-change__message" id="current-message">Cargando...</p>
+        <p class="demo-change__subtitle-msg" id="current-subtitle">...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!--  FOOTER                                             -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__left">
+        <span class="header__wordmark">eneisoft</span>
+        <span class="footer__text">XVI · Track DevOps</span>
+      </div>
+      <div class="footer__center">
+        <span>Miguel Solis · Practicante Ing. Software – Mibanco</span>
+      </div>
+      <div class="footer__right">
+        <a href="https://github.com/<TU_USUARIO>/eneisoft-pipeline-demo"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="footer__link"
+           aria-label="Ver repositorio en GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          Repositorio
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

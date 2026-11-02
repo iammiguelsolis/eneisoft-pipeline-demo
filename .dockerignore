@@ -1,0 +1,31 @@
+# Git
+.git
+.gitignore
+
+# Dependencies (se instalan en el build)
+node_modules
+
+# Docs y config que no van en la imagen
+docs/
+infra/
+k8s/
+argocd/
+.github/
+*.md
+LICENSE
+
+# IDE y OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Tests
+tests/
+coverage/
+jest.config.js
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
