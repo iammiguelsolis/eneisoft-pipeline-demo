@@ -12,6 +12,7 @@ const app = express();
 // ── Seguridad ──────────────────────────────────────────────
 app.use(helmet({
   contentSecurityPolicy: {
+    useDefaults: false,
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "'unsafe-inline'"],
@@ -21,6 +22,10 @@ app.use(helmet({
       connectSrc: ["'self'", 'https://api.github.com'],
     },
   },
+  // Disable HTTPS-only headers (no TLS termination on this service)
+  hsts: false,
+  crossOriginOpenerPolicy: false,
+  originAgentCluster: false,
 }));
 
 // ── Archivos estáticos ────────────────────────────────────

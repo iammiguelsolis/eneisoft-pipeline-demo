@@ -39,6 +39,12 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Prevent browser forced-dark-mode from mangling inline SVGs */
+svg {
+  forced-color-adjust: none;
+  color-scheme: light dark;
+}
+
 body {
   font-family: var(--font-sans);
   color: var(--white);
